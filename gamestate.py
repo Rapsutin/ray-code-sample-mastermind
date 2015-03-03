@@ -4,18 +4,20 @@ import random
 
 
 class GameState:
+    """
+    Keeps track of the situation of the game.
+    The UI-functions should be handled elsewhere.
+    """
 
     def __init__(self, number_of_rows):
         """
-        Initiates a new game state. The UI-functions should be handled elsewhere.
-        :param number_of_rows: The number of turns for the player to break the code.
+        :param number_of_rows: The number of turns for the player to break the code. (difficulty)
         """
 
         self.turnsPlayed = 0
         self.maxTurns = number_of_rows
-
         self.playerGuesses = [[PlayerPeg.empty]*number_of_rows for i in range(number_of_rows)]  # Stores the player's guesses.
-        self.keyPegs = []  # 2d array containing the current key peg amounts (KeyPegAmount) for each row.
+        self.key_pegs = []  # 2d array containing the current key peg amounts (KeyPegAmount) for each row.
 
         self.gameFinished = False
         self.gameWon = False
@@ -27,7 +29,10 @@ class GameState:
         """
         Generates the code for the player to solve.
         """
-        return random.sample(range(1, 7), 4)
+        code = []
+        for i in range(4):
+            code.append(random.randint(1, 6))
+        return code
 
 
     def take_turn(self, guess):
@@ -46,15 +51,24 @@ class GameState:
             self.gameFinished = True
 
     def __record_guess(self, guess):
+        """
+        Adds a player guess into the game state.
+        :param guess: The guessed pegs as a 4-list
+        """
         self.playerGuesses[self.turnsPlayed] = guess  # Record the newly played guess
         self.__evaluate_new_guess(guess)  # and evaluate it.
 
-
     def __evaluate_new_guess(self, guess):
+        """
+        Evaluates the guess and places the appropriate
+        key peg amounts into self.key_pegs.
+        :parameter guess: The guessed pegs as a 4-list
+        """
+
         correct_guesses = 0
         correct_colors = 0
 
-        for i in range(0, 4):
+        for i in range(4):
             peg = guess[i]
 
             if peg == self.code[i]:
@@ -63,7 +77,7 @@ class GameState:
             elif peg in self.code:
                 correct_colors += 1
 
-        self.keyPegs.append(KeyPegAmount(correct_guesses, correct_colors))
+        self.key_pegs.append(KeyPegAmount(correct_guesses, correct_colors))
 
         if correct_guesses == 4:
             self.gameWon = True
@@ -75,6 +89,10 @@ class KeyPegAmount:
         self.white_pegs = whites
 
 class PlayerPeg:
+    """
+    Enum for the pegs the player places.
+    The numerical values are just for identification
+    """
     empty = 0
     cyan = 6
     red = 2
@@ -84,6 +102,10 @@ class PlayerPeg:
     white = 1
 
 class KeyPeg:
+    """
+    Enum for the key pegs (the smaller pegs)
+    The numerical values are just for identification
+    """
     empty = 0
     white = 1
     red = 2
