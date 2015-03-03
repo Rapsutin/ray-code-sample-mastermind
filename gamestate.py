@@ -27,7 +27,7 @@ class GameState:
         """
         Generates the code for the player to solve.
         """
-        return random.sample(range(1, 6), 4)
+        return random.sample(range(1, 7), 4)
 
 
     def take_turn(self, guess):
@@ -88,11 +88,5 @@ class KeyPeg:
     white = 1
     red = 2
 
-class Difficulty:
-    """
-    The number of turns to break the code.
-    """
-    easy = 12
-    medium = 10
-    hard = 8
+
 
